@@ -6,6 +6,9 @@ def get_document(fd, index, doc_id):
     line = fd.readline()
     parts = line.strip().split('\t')
     
+    if len(parts) !=3:
+        return "", ""
+    
     return parts[1], parts[2]
 
 
@@ -40,6 +43,20 @@ def load_test(file_name):
             queries.append((q_id, docs))
     return queries
 
+
+def load_train(file_name):
+    queries = []
+    with open(file_name, 'rt') as fd:
+        for line in fd:
+            parts = line.strip().split('\t')
+            q_id = int(parts[0])
+            docs = eval(parts[1])
+            clicks = eval(parts[2])
+            
+            queries.append((q_id, docs, clicks))
+    return queries
+
+
 def copy_model(old, new):
     new.file_name = old.file_name
     new.norm_method = old.norm_method
@@ -56,3 +73,18 @@ def copy_model(old, new):
     new.body_lengths = old.body_lengths
     new.avg_title_length = old.avg_title_length
     new.avg_body_length = old.avg_body_length
+    return new
+    
+
+eng_text = 'qwertyuiop[]asdfghjkl;\'\zxcvbnm,./'
+rus_text = 'йцукенгшщзхъфывапролджэ\ячсмитьбю.'
+eng_rus_dict = dict(zip(eng_text, rus_text))
+
+def translate(text):
+    out = ''
+    for x in text:
+        if x in eng_rus_dict:
+            out += eng_rus_dict[x]
+        else:
+            out += x
+    return out
