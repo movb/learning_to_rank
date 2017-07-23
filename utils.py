@@ -1,5 +1,38 @@
 import pickle
 
+
+class DocWrap():
+    def __init__(self, file_name, index_file):
+        self.fd = open(file_name,'rt')
+        self.index = load_from_file(index_file)
+    
+    def get(self, doc_id):
+        return get_document(self.fd, self.index, doc_id)
+        
+
+def build_index(data_file, max_lines=None):
+    documents = {}
+    with open(data_file, "rt") as fd:
+        pos=0
+        line_num = 0
+        #for line_num, line in enumerate(fd):
+        while True:
+            line = fd.readline()
+            if not line:
+                break
+        
+            parts = line.strip().split('\t')
+            doc_id = int(parts[0])
+
+            documents[doc_id] = pos          
+            pos = fd.tell()
+            
+            line_num += 1
+            if max_lines and max_lines==line_num:
+                break
+    
+    return documents
+
 def get_document(fd, index, doc_id):
     pos = index[doc_id]
     fd.seek(pos)

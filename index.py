@@ -23,21 +23,21 @@ class Index:
         self.bigram_filter = None
         self.char_trigram_filter = None
         self.stop_words = []
-        self.fd = open(self.file_name,'rt')
         
     def build(self):
-        self.fd.seek(0, 0)
-        for line in self.fd:
-            parts = line.strip().split('\t')
-            if len(parts) == 3:
-                doc_id, title, body = parts
-            elif len(parts) == 2:
-                doc_id, title = parts
-                body = ''
-            elif len(parts) == 1:
-                doc_id, title, body = parts[0], '', ''
-            else:
-                continue
+        with open(self.file_name,'rt') as fd:
+            for line in fd:
+                parts = line.strip().split('\t')
+                
+                if len(parts) == 3:
+                    doc_id, title, body = parts
+                elif len(parts) == 2:
+                    doc_id, title = parts
+                    body = ''
+                elif len(parts) == 1:
+                    doc_id, title, body = parts[0], '', ''
+                else:
+                    continue
 
                 doc_id = int(doc_id)
 
@@ -74,7 +74,7 @@ class Index:
     
     def normalize(self, terms):
         normalized_terms = []
-        terns = [term.lower() for term in terms]
+        terms = [term.lower() for term in terms]
         
         if self.norm_method == 'none':
             if self.unigram_filter is not None:

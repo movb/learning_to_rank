@@ -12,7 +12,7 @@ def score_idf(N, n, smooth=0.5):
 def score_bm25_internal(N, query_terms, inverted_terms, doc_terms, doc_len, avg_doc_len, k1, b, idf_smooth):
     result = 0.0
     for term in query_terms:
-        idf = score_idf(N, len(inverted_terms[term]), idf_smooth)
+        idf = score_idf(N, inverted_terms[term], idf_smooth)
         result += idf * (doc_terms[term]*(k1 + 1))/(doc_terms[term] + k1*(1 - b + b*(doc_len/avg_doc_len)))
     return result
         
